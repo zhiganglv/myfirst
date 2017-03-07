@@ -317,4 +317,4 @@ _LazyMan.prototype.sleep = function(time) {
 //LazyMan("Hank").eat("dinner").eat("supper");
 LazyMan("Hank").sleep(3).eat("dinner");
 
-七。顶顶顶
+七。操你妈逼顶顶顶等等new
