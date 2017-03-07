@@ -66,6 +66,17 @@ $("#link-list").delegate("a", "click", function(){
 （3）.JavaScript和DOM节点之间的关联变少了，这样也就减少了因循环引用而带来的内存泄漏发生的概率。
 
 二.call与apply
+obj.call(thisObj, arg1, arg2, ...);
+obj.apply(thisObj, [arg1, arg2, ...]);
+两者作用一致，都是把obj(即this)绑定到thisObj，这时候thisObj具备了obj的属性和方法。
+或者说thisObj『继承』了obj的属性和方法。唯一区别是apply接受的是数组参数，call接受的是连续参数。
+1.
+复制代码 代码如下:
+Object.prototype.toString.call(Obj)
+用来判断 Obj 的类型
+arguments 虽然和Array 很像，但是他没有Array的push之类的方法，怎么办？
+Array.prototype.push.call(arguments)
+
 三，event对象
 1.兼容性代码
 	var eventUntil = {
@@ -204,4 +215,105 @@ $("#link-list").delegate("a", "click", function(){
 
 四。如何判断是否为ie浏览器
 window.navigator.userAgent.indexOf("IE")>=1
+
+五。事件模型。
+function Emitter() {
+    this._listener = {};//_listener[自定义的事件名] = [所用执行的匿名函数1, 所用执行的匿名函数2]
+}
+ 
+//注册事件
+Emitter.prototype.bind = function(eventName, callback) {
+    var listener = this._listener[eventName] || [];//this._listener[eventName]没有值则将listener定义为[](数组)。
+    listener.push(callback);
+    this._listener[eventName] = listener;
+    //console.log(this._listener[eventName],this._listener,'bind')
+}
+ 
+ //触发事件
+Emitter.prototype.trigger = function(eventName) {
+    var args = Array.prototype.slice.apply(arguments).slice(1);//atgs为获得除了eventName后面的参数(注册事件的参数)
+    //console.log(args,'args');
+    var listener = this._listener[eventName];
+    console.log(this._listener)
+    //console.log(listener,'listener',this._listener,'this._listener')
+ 
+    if(!Array.isArray(listener)) return;//自定义事件名不存在
+    listener.forEach(function(callback) {
+        try {
+        	console.log(this);
+            callback.apply(this, args);
+        }catch(e) {
+            console.error(e);
+        }
+    })
+}
+//实例
+var emitter = new Emitter();
+emitter.bind("myevent", function(arg1, arg2) {
+    console.log(arg1, arg2);
+});
+
+emitter.bind("myevent", function(arg1, arg2) {
+    console.log(arg2, arg1);
+});
+
+emitter.trigger('myevent', "a", "b");
+
+
+六。实现链式调用的例子，原理与事件模型相同
+
+复制代码
+function LazyMan(name) {
+    return new _LazyMan(name);
+}
+function _LazyMan(name) {
+    console.log("Hi This is " + name)
+    this.task = [];
+    var _this = this;
+    var namer = (function(name) {
+        return function() {
+            console.log(name);
+            _this.next();
+        }
+    })(name)
+    this.task.push(namer);
+    setTimeout(function() {
+        _this.next();
+    }, 0);
+    return this;
+}
+_LazyMan.prototype.next = function() {
+    var fn = this.task.shift();
+    fn&&fn();
+}
+_LazyMan.prototype.eat = function(val) {
+    var _this = this;
+    var eat = (function(val) {
+        return function() {
+            console.log("eat" + val);
+            _this.next();
+        }
+    })(val);
+    this.task.push(eat);
+    return this;
+}
+_LazyMan.prototype.sleep = function(time) {
+    var _this = this;
+
+    var timer = (function(time) {
+        return function() {
+            setTimeout(function() {
+                console.log("wait");  
+                console.log("time=" + time);
+                _this.next();
+            }, time*1000);
+        }
+        
+    })(time);
+    this.task.push(timer);
+    return this;
+}
+
+//LazyMan("Hank").eat("dinner").eat("supper");
+LazyMan("Hank").sleep(3).eat("dinner");
 
