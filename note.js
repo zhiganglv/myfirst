@@ -317,4 +317,189 @@ _LazyMan.prototype.sleep = function(time) {
 //LazyMan("Hank").eat("dinner").eat("supper");
 LazyMan("Hank").sleep(3).eat("dinner");
 
-七。dev
+七。事件监听与广播
+
+
+
+/** 
+ * 事件侦听、广播、单播 
+ * @method 
+ * @example 
+        //创建频道“unameChange” 
+        Utils.Listener.createChannel('unameChange'); 
+        //创建频道“uname.change”---天然支持“伪”命名空间！！！ 
+        Utils.Listener.createChannel('uname.change'); 
+ 
+        //添加unameChange的监听者“updateTray” 
+        Utils.Listener.add('unameChange', 'updateTray', function(){ 
+            //TODO 
+        }); 
+        //添加unameChange的监听者“changeFootbar” 
+        Utils.Listener.add('unameChange', 'changeFootbar', function(){ 
+            //TODO 
+        }); 
+        //发出广播 
+        Utils.Listener.broadcast('unameChange', someData); 
+        //发出广播 
+        Utils.Listener.broadcast('uname.change', someData); 
+        //发出单播 
+        Utils.Listener.unicast('uname.change', 'changeFootbar', someData); 
+ */  
+var Utils = {};  
+!function(){  
+    if(Utils.Listener){  
+        return;  
+    }  
+    var _channels = {},  
+        slice = Array.prototype.slice;  
+  
+    Utils.Listener = {  
+        //channelName 频道名，天然支持“伪”命名空间。例如：uname.change  
+        createChannel: function(channelName){  
+            if( _channels[channelName] ){  
+                console.log('Channel "'+channelName+'" has been defined!');  
+            }else{  
+                _channels[channelName] = {};  
+            }  
+        },  
+        //channelName 监听频道  
+        //listenerName 监听者  
+        //handler 发生广播时的执行函数  
+        add: function(channelName, listenerName, handler){  
+            var channel = _channels[channelName];  
+            if( !channel ){  
+                console.log('Channel "'+channelName+'" has NOT been defined!');  
+                return;  
+            }  
+            if( channel[listenerName] ){  
+                console.log(channelName+':'+listenerName+'" has been defined!');  
+                return;  
+            }  
+            channel[listenerName] = handler;  
+        },  
+        broadcast: function(channelName/*, data...*/){  
+            var channel = _channels[channelName];  
+            if( channel ){  
+                for(var p in channel){  
+                    if( channel[p] ){  
+                        channel[p].apply(null, slice.call(arguments,1));  
+                    }  
+                }  
+            }  
+        },  
+        unicast: function(channelName, listenerName/*, data...*/){  
+            var channel = _channels[channelName];  
+            if( channel && channel[listenerName]){  
+                channel[listenerName].apply(null, slice.call(arguments,2));  
+            }  
+        },  
+        //channelName 频道名  
+        //listenerName 可选，如果没有，将删除整个频道  
+        remove: function(channelName, listenerName){  
+            var channel = _channels[channelName];  
+            if( channel ){  
+                if(listenerName){  
+                    channel[listenerName] = null;  
+                    delete channel[listenerName];  
+                }else{  
+                    channel = null;  
+                    delete _channels[channelName];  
+                }  
+            }  
+        }  
+          
+    };  
+  
+
+八，前端性能优化
+九，闭包的原理和应用。
+1.什么是闭包？
+2. 作用: 
+3.应用，
+十，获得函数名，
+function getFunctionName(fun) {
+    if (fun.name !== undefined)
+        return fun.name;
+    var ret = fun.toString();
+    console.log(ret)
+    ret = ret.substr('function '.length);
+    console.log(ret)
+    ret = ret.substr(0, ret.indexOf('('));
+    console.log(ret)
+    return ret;
+}
+十一，弹出窗 http://www.mamicode.com/info-detail-1212276.html
+1.var li=document.getElementsByTagName('li');
+	for(var i=0;i<li.length;i++){
+		li[i].onclick=(function(i){
+			return function(){
+				console.log(i);
+			}
+		})(i)
+	}
+
+
+2。for(let i=0;i<li.length;i++){
+		li[i].onclick=
+			function(){
+				console.log(i);
+			}
+	}
+
+3，for(var i = 0;i<arr.length;i++){
+    arr[i].i = i;
+    arr[i].onclick = function () {
+        alert(this.i);
+    }
+}
+
+4.for(var i = 0;i<li.length;i++){
+    (li[i].onclick = function () {
+        console.log(arguments.callee.i);      //arguments 参数对象  arguments.callee 参数对象所属函数
+    }).i = i;
+}
+
+十一，手写Function.prototype.bind
+
+if (!Function.prototype.bind) {
+  Function.prototype.bind = function (oThis) {
+    if (typeof this !== "function") {
+      // closest thing possible to the ECMAScript 5
+      // internal IsCallable function
+      throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
+    }
+ 
+    var aArgs = Array.prototype.slice.call(arguments, 1),
+        fToBind = this,
+        fNOP = function () {},
+        fBound = function () {
+          return fToBind.apply(this instanceof fNOP
+                                 ? this
+                                 : oThis || this,
+                               aArgs.concat(Array.prototype.slice.call(arguments)));
+        };
+ 
+    fNOP.prototype = this.prototype;
+    fBound.prototype = new fNOP();
+ 
+    return fBound;
+  };
+}
+
+十二，将url的查询参数解析成字典对象
+function getQueryObject(url) {
+    url = url == null ? window.location.href : url;
+    var search = url.substring(url.lastIndexOf("?") + 1);
+    var obj = {};
+    var reg = /([^?&=]+)=([^?&=]*)/g;
+    search.replace(reg, function (rs, $1, $2) {
+        var name = decodeURIComponent($1);
+        var val = decodeURIComponent($2);                
+        val = String(val);
+        obj[name] = val;
+        return rs;
+    });
+    return obj;
+}
+
+
