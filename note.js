@@ -502,4 +502,75 @@ function getQueryObject(url) {
     return obj;
 }
 
+十三，数组排序
+quickSort = function(arr){
+    //返回（如果当前数组不再需要排序时）
+    if(arr.length <= 1) return arr;
+    //声明两个数组分别用来防止"小值"和"大值"
+    var less = [];
+    var greater = [];
+    //选取被排序数组中的任一元素作为"基准"（这里我们就选取数组中间的元素）
+    var pivotIndex = Math.floor(arr.length / 2);
+    var pivot = arr.splice(pivotIndex, 1)[0];
+    //遍历数组，进行区分操作
+    for(var i = 0, len = arr.length; i < len; i++){
+        if(arr[i] < pivot){
+            less.push(arr[i]);
+        } else {
+            greater.push(arr[i]);
+        }
+    }
+    //最后使用递归不断重复这个过程，直到获得排序后的数组
+    return quickSort(less).concat([pivot], quickSort(greater));
+};
+
+十四，数组去重
+function unique(arr){
+    var ret = [];
+    var hash = {};
+    
+    for(var i = 0; i < arr.length; i++){
+        var item = arr[i];
+        var key = typeof(item) + item;
+        if(hash[key] !== 1){
+            ret.push(item);
+            hash[key] = 1;
+        }
+    }
+    return ret;
+}
+
+十五，函数节流
+var throttle = function(fn, delay){
+ 	var timer = null;
+ 	return function(){
+ 		var context = this, args = arguments;
+ 		clearTimeout(timer);
+ 		timer = setTimeout(function(){
+ 			fn.apply(context, args);
+ 		}, delay);
+ 	};
+ };
+
+
+var throttleV2 = function(fn, delay, mustRunDelay){
+ 	var timer = null;
+ 	var t_start;
+ 	return function(){
+ 		var context = this, args = arguments, t_curr = +new Date();
+ 		clearTimeout(timer);
+ 		if(!t_start){
+ 			t_start = t_curr;
+ 		}
+ 		if(t_curr - t_start >= mustRunDelay){
+ 			fn.apply(context, args);
+ 			t_start = t_curr;
+ 		}
+ 		else {
+ 			timer = setTimeout(function(){
+ 				fn.apply(context, args);
+ 			}, delay);
+ 		}
+ 	};
+ };
 
