@@ -694,6 +694,8 @@ http://blog.csdn.net/oney139/article/details/8103223
 二十一，Cookie、session、localStorage的区别和用法。
 二十二，JS里的继承有哪些
 
+http://www.imooc.com/wenda/detail/323379
+
 
 
 
