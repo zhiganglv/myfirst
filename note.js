@@ -574,3 +574,159 @@ var throttleV2 = function(fn, delay, mustRunDelay){
  	};
  };
 
+十六，css居中。
+1.不能改变display的
+.father{display:table}
+.son{display:table-cell;verticl-align:middle;text-align:center}
+2.
+.box2{
+display: flex;
+justify-content:center;
+align-items:Center;
+}
+3.
+.box3{position:relative;}
+.box3 span{
+    position: absolute;
+    width:100px;
+    height: 50px;
+    top:50%;
+    left:50%;
+    margin-left:-50px;
+    margin-top:-25px;
+    text-align: center;
+}
+4.
+box4 span{
+  width: 50%; 
+  height: 50%; 
+  background: #000;
+  overflow: auto; 
+  margin: auto; 
+  position: absolute; 
+  top: 0; left: 0; bottom: 0; right: 0; 
+}
+5.
+.box6 span{
+    position: absolute;
+    top:50%;
+    left:50%;
+    width:100%;
+    transform:translate(-50%,-50%);
+    text-align: center;
+}
+6.
+.box8{
+    display: flex;
+    text-align: center;
+}
+.box8 span{margin: auto;}
+7.
+.box9{
+    display: -webkit-box;
+    -webkit-box-pack:center;
+    -webkit-box-align:center;
+    -webkit-box-orient: vertical;
+    text-align: center
+}
+十七，上中下布局
+1，
+.header {
+	background: #C9F;
+	width: 100%;
+	height: 90px;
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	text-align: center;
+	background-color: #FFCC00;
+}
+.content {
+ position:absolute!important;
+ position:relative;
+ top:90px!important;
+ top:0;
+ bottom:32px;
+ width:100%;
+ overflow:hidden;
+ height:auto!important;
+ height:100%;
+ left: -3px;
+}
+.footer {
+	background: #9CF;
+	width: 100%;
+	height: 40px;
+	color: #e1efff;
+	line-height: 32px;
+	letter-spacing: 1px;
+	text-align: center;
+	clear: both;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	background-color: #FF6600;
+}
+
+2.
+.header,.content,.footer{display:table-row}
+.header,.footer{height:40px;}
+
+十八，
+calc()可以使用数学运算中的简单加（+）、减（-）、乘（*）和除（/）来解决问题，而且还可以根据单位如px,em,rem和百分比来转化计算。
+
+十九，
+如何解决不同浏览器之间的兼容性问题，或者是否有遇到过兼容性问题，如何解决？
+
+二十，
+一个网页从地址栏输入url到最后在浏览器中显示，中间经过了那些过程？
+1.在发送http请求前，需要域名解析(DNS解析)(DNS（域名系统，Domain Name System）是互联网的一项核心服务，
+  它作为可以将域名和IP地址相互映射的一个分布式数据库，能够使人更方便的访问互联网，而不用去记住IP地址。)，解析获取相应的IP地址。
+2.浏览器向服务器发起tcp连接，与浏览器建立tcp三次握手。（TCP即传输控制协议。TCP连接是互联网连接协议集的一种。）
+3.握手成功后，浏览器向服务器发送http请求，请求数据包。
+4.服务器处理收到的请求，将数据返回至浏览器
+5.浏览器收到HTTP响应
+
+TCP 三次握手
+http://blog.csdn.net/oney139/article/details/8103223
+
+二十一，Cookie、session、localStorage的区别和用法。
+二十二，JS里的继承有哪些
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
