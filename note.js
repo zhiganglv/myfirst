@@ -692,9 +692,140 @@ TCP 三次握手
 http://blog.csdn.net/oney139/article/details/8103223
 
 二十一，Cookie、session、localStorage的区别和用法。
-二十二，JS里的继承有哪些
 
+二十二，JS里的继承有哪些
+http://www.cnblogs.com/humin/p/4556820.html
+
+二十三，讲讲几种简单的设计模式的应用场景。外观模式与适配器模式的区别。
+
+二十四，你对加班怎么看？
+
+二十五，
+HTML5之Javascript多线程
+http://www.cnblogs.com/zhwl/p/4667470.html
+
+二十六，
+Js是怎么解析的？什么时候执行的？
+
+预解析：浏览器去加载网页的时候，是按照从上到下，从左到右法人顺序加载的，读取的内容就死一个字符串，当遇到
+Script标签的时候，浏览器会先把代码读到内存里面，此时会把所有的声明预加载到内存中；这就是js的预解析；此时代码并没有执行；
+按步执行：当代码执行的时候，声明的变量或者函数早已经加载到内存中了  ，这个时候从上到下，从左到右执行js 
+
+二十七，原生ajax,
+function createxmlHttpRequest() { 
+	var xmlHttp;  
+	if (window.ActiveXObject) { 
+		xmlHttp = new ActiveXObject("Microsoft.XMLHTTP"); 
+	} else if (window.XMLHttpRequest) { 
+		xmlHttp=new XMLHttpRequest(); 
+	}
+	return xmlHttp
+} 
+
+function get(url){
+	var xmlHttp=createxmlHttpRequest();
+	xmlHttp.open("GET",url); 
+	xmlHttp.send(null); 
+	xmlHttp.onreadystatechange = function() { 
+	if ((xmlHttp.readyState == 4) && (xmlHttp.status == 200)) { 
+		alert('success'); 
+	} else { 
+		alert('fail'); 
+	} 
+	} 
+}
+
+function post(url,data){ 
+// 注意在传参数值的时候最好使用encodeURI处理一下，以防出现乱码 
+	var xmlHttp=createxmlHttpRequest(); 
+	xmlHttp.open("POST",url); 
+	xmlHttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded"); 
+	xmlHttp.send(data); 
+	xmlHttp.onreadystatechange = function() { 
+		if ((xmlHttp.readyState == 4) && (xmlHttp.status == 200)) { 
+			alert('success'); 
+		} else { 
+			alert('fail'); 
+		} 
+	} 
+} 
+二十八，
+判断浏览器类型
+1.电脑端
+function getBrowser(ifVersion) {   
+        var ua = navigator.userAgent.toLowerCase();
+        var arr=[];
+        if (window.ActiveXObject){
+        	arr.push('ie',ua.match(/msie ([\d.]+)/)[1]);
+        }
+        else if (document.getBoxObjectFor){
+            arr.push('firefox',ua.match(/firefox\/([\d.]+)/)[1]);
+        }
+        else if (window.openDatabase){
+             arr.push('safari', ua.match(/version\/([\d.]+).*safari/)[1]);
+        }
+        else if (window.MessageEvent && !document.getBoxObjectFor){
+            arr.push('chrome',ua.match(/chrome\/([\d.]+)/)[1]);
+        }
+        else if (window.opera){
+             arr.push('opera',ua.match(/opera.([\d.]+)/)[1]);
+        }
+        
+        return ifVersion?arr:arr[0];
+} 
+2.移动端
+
+function browserMsg(){
+	var u = navigator.userAgent, app = navigator.appVersion;   
+    return {//移动终端浏览器版本信息   
+        trident: u.indexOf("Trident") > -1, //IE内核  
+        presto: u.indexOf("Presto") > -1, //opera内核  
+        webKit: u.indexOf("AppleWebKit") > -1, //苹果、谷歌内核  
+        gecko: u.indexOf("Gecko") > -1 && u.indexOf("KHTML") == -1, //火狐内核  
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端  
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端  
+        android: u.indexOf("Android") > -1 || u.indexOf("Linux") > -1, //android终端或者uc浏览器  
+        iPhone: u.indexOf("iPhone") > -1 , //是否为iPhone或者QQHD浏览器  
+        iPad: u.indexOf("iPad") > -1, //是否iPad  
+        webApp: u.indexOf("Safari") == -1 //是否web应该程序，没有头部与底部  
+        };  
+    }
+}
+
+二十九，
+BFC
+1.BFC布局规则：
+内部的Box会在垂直方向，一个接一个地放置。
+Box垂直方向的距离由margin决定。属于同一个BFC的两个相邻Box的margin会发生重叠
+每个元素的margin box的左边， 与包含块border box的左边相接触(对于从左往右的格式化，否则相反)。即使存在浮动也是如此。
+BFC的区域不会与float box重叠。
+BFC就是页面上的一个隔离的独立容器，容器里面的子元素不会影响到外面的元素。反之也如此。
+计算BFC的高度时，浮动元素也参与计算
+2.哪些元素会生成BFC
+根元素
+float属性不为none
+position为absolute或fixed
+display为inline-block, table-cell, table-caption, flex, inline-flex
+overflow不为visible
+
+3.应用
+　自适应两栏布局
+  清除内部浮动
+  防止垂直 margin 重叠
+http://www.cnblogs.com/lhb25/p/inside-block-formatting-ontext.html
+
+三十，
+对HTTP的了解
+
+项目篇
+1、面试中曾遇到哪些技术问题，你的解决思路？
+
+	  
 http://www.imooc.com/wenda/detail/323379
+
+技巧篇
+1.这次记住了上次的教训，聊项目的时候，可以给面试官挖几个坑，因为这次面试的明显能感觉出来是个boss。坑在哪里？
+坑是自己掌握的比较好，在聊项目的时候可以吸引到面试官的点，稍微带一带方向，下一个问题面试官可能就是要问你这个问题了。 
 
 
 
