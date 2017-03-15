@@ -412,6 +412,12 @@ var Utils = {};
   
 
 八，前端性能优化
+1.减少http的请求次数，
+	1）捆绑文件 现在有很多现成的库可以帮你将多个脚本文件捆绑成一个文件，将多个样式表文件捆绑成一个文件，以此来减少文件的下载次数。
+	2）css sprite 图片
+	3）Inline images: 通过编码的字符串将图片内嵌到网页文本中。例如下面的inline image的显示效果为一个勾选的checkbox。
+2.
+http://www.cnblogs.com/developersupport/p/webpage-performance-best-practices.html#httprequest
 九，闭包的原理和应用。
 1.什么是闭包？
 2. 作用: 
