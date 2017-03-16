@@ -412,11 +412,85 @@ var Utils = {};
   
 
 八，前端性能优化
-1.减少http的请求次数，
-	1）捆绑文件 现在有很多现成的库可以帮你将多个脚本文件捆绑成一个文件，将多个样式表文件捆绑成一个文件，以此来减少文件的下载次数。
-	2）css sprite 图片
-	3）Inline images: 通过编码的字符串将图片内嵌到网页文本中。例如下面的inline image的显示效果为一个勾选的checkbox。
+1.
+	1）合并压缩文件
+	2）懒加载，提前加载，延迟加载。
+	3）缓存，http2的缓存，还有sessionStorage/localStorage
+	4）js，css代码层面的优化，函数节流
+	5）使用cdn。
 2.
+网页内容
+		减少http请求次数（压缩合并文件，sprite,inline-images）
+
+		减少DNS查询次数(用3到5个域名)
+
+		合理设置 HTTP缓存
+
+		缓存数据
+
+		延迟加载
+
+		提前加载
+
+		减少DOM元素数量
+
+ 服务器
+		使用CDN(内容分发网络)
+
+		添加Expires 或Cache-Control报文头
+
+		Gzip压缩传输文件
+
+		配置ETags
+
+		尽早flush输出
+
+		使用GET Ajax请求
+
+		避免空的图片src
+
+ Cookie
+		减少Cookie大小
+
+		页面内容使用无cookie域名
+
+CSS
+		将样式表置顶
+
+		避免CSS表达式
+
+		用<link>代替@import
+
+		避免使用Filters
+
+Javascript
+		将脚本置底
+
+		使用外部Javascirpt和CSS文件
+
+		精简Javascript和CSS
+
+		去除重复脚本
+
+		减少DOM访问
+
+		使用智能事件处理
+
+ 图片
+		优化图像
+
+		优化CSS Sprite
+
+		不要在HTML中缩放图片
+
+		使用小且可缓存的favicon.ico
+
+		移动客户端
+		保持单个内容小于25KB
+
+打包组建成符合文档
+https://www.zhihu.com/question/21658448
+https://zhuanlan.zhihu.com/p/21417465?refer=no-backend
 http://www.cnblogs.com/developersupport/p/webpage-performance-best-practices.html#httprequest
 九，闭包的原理和应用。
 1.什么是闭包？
