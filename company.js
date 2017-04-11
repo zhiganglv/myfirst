@@ -186,6 +186,22 @@ http://www.cnblogs.com/smjack/archive/2009/02/24/1396895.html
 
 代码层面
 1.不使用CSS表达式。
+	dom深度尽量浅。
+	不使用style。
+	不要为id选择器指定类名或是标签，因为id可以唯一确定一个元素。
+	避免使用通配符
+	尽量使用css动画，启用硬件加速。
+2.JavaScrip thttp://www.codeceo.com/article/javascript-performance-tips.html
+	减少dom操作，
+	使用虚拟的dom，
+	多个变量声明，
+	innerHTML，
+	使用事件代理，
+	数字转换成字符串，
+	className,
+	简化循环体
+	代码重用
+
 
 十，浏览器的主要组成
 	浏览器的主要组件包括：
