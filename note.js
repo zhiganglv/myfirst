@@ -4,14 +4,14 @@
 function delegate(currentTargetDom,targetStr,type,callBack){
 	if(currentTargetDom.addEventListener){
 		currentTargetDom.addEventListener(type,function(event){
-			if(event.target.nodeName.toUpperCase==targetStr){
+			if(event.target.nodeName.toUpperCase()==targetStr){
 				callBack(event)
 			}
 		})
 	}else if(currentTargetDom.attachEvent){
 		currentTargetDom.attachEvent('on'+type,function(){
 			var event=window.event;
-			if(event.srcElement.nodeName.toUpperCase==targetStr){
+			if(event.srcElement.nodeName.toUpperCase()==targetStr){
 				callBack(event)
 			}
 		})
@@ -19,7 +19,7 @@ function delegate(currentTargetDom,targetStr,type,callBack){
 		currentTargetDom['on'+type]=function(e){
 			var event=e||window.event;
 			var target=event.target||event.srcElement;
-			if(target.nodeName.toUpperCase==targetStr){
+			if(target.nodeName.toUpperCase()==targetStr){
 				callBack(event)
 			}
 		}
@@ -234,13 +234,11 @@ Emitter.prototype.trigger = function(eventName) {
     var args = Array.prototype.slice.apply(arguments).slice(1);//atgs为获得除了eventName后面的参数(注册事件的参数)
     //console.log(args,'args');
     var listener = this._listener[eventName];
-    console.log(this._listener)
     //console.log(listener,'listener',this._listener,'this._listener')
  
     if(!Array.isArray(listener)) return;//自定义事件名不存在
     listener.forEach(function(callback) {
         try {
-        	console.log(this);
             callback.apply(this, args);
         }catch(e) {
             console.error(e);
@@ -894,21 +892,448 @@ overflow不为visible
   防止垂直 margin 重叠
 http://www.cnblogs.com/lhb25/p/inside-block-formatting-ontext.html
 
-三十，
-对HTTP的了解
+三十，http
+http://www.cnblogs.com/li0803/archive/2008/11/03/1324746.html
+
+三十一，get与post的区别
+1.根据HTTP规范，GET用于信息获取，而且应该是安全的和幂等的。根据HTTP规范，POST表示可能修改变服务器上的资源的请求
+2..GET请求的数据会附在URL之后（就是把数据放置在HTTP协议头中，POST把提交的数据则放置在是HTTP包的包体中
+3GET方式提交的数据最多只能是1024字节，理论上POST没有限制，可传较大量的数据，IIS4中最大为80KB，IIS5中为100KB
+4.在ASP中，服务端获取GET请求参数用Request.QueryString，获取POST请求参数用Request.Form
+5.POST的安全性要比GET的安全性高。
+
+三十二，
+use strict 的好处
+- 消除Javascript语法的一些不合理、不严谨之处，减少一些怪异行为;
+- 消除代码运行的一些不安全之处，保证代码运行的安全；
+- 提高编译器效率，增加运行速度；
+- 为未来新版本的Javascript做好铺垫。
+
+三十三，兼容性
+ 1.CSS透明
+     filter:alpha(opacity=60);
+     2.
+    js
+    1.IE提供的children、childNodes和firefox下的childNodes的行为是
+      有区别的，firefox下childNodes会把换行和空白字符都算作父节点的子节点，
+      而IE的childNodes和children不会。
+      解决办法：检查nodeType的值
+      for(var i=0,len=element.length;i<len;i++){
+        if(element.childNodes[0].nodeType==1){
+          //
+        }
+      }
+    2.ie中有window.event,其他浏览器测试通过传递参数
+    3.是innerText在FireFox中却不行，需用textContent；
+      解决办法：obj.innertext?obj.innertext:obj.textContent;
+    4.AJAX获取XMLHTTP的区别
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        xmlhttp = new XMLHttpRequest();
+      } elseif (window.ActiveXObject) { // IE的获取方式
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+    5.IE下 input.type 属性为只读；但是Firefox下 input.type 属性为读写。
+      IE下，even对象有x、y属性，但是没有pageX、pageY属性；Firefox下，
+      even对象有pageX、pageY属性，但是没有x、y属性。
+    6.IE下，even对象有srcElement属性，但是没有target属性；Firefox下，
+    even对象有target属性，但是没有srcElement属性
+    7.FireFox中类似 obj.style.height = imgObj.height 的语句无效。
+    8. 基于'/'格式的日期字符串，才是被各个浏览器所广泛支持的，
+    ‘-’连接的日期字符串，则是只在chrome下可以正常工作。
+
+三十三，
+闭包、作用域链、模块模式、自定义事件、异步装载回调、模板引擎、继承、prototype
+  1、闭包是指有权限访问另一个函数作用域的变量或者方法的函数吧
+     为什么要运用闭包？1.封装函数。2.结果缓存。3.实现类和继承。
+     类和继承代码：
+     function Person(){    
+    var name = "default";       
+       
+    return {    
+       getName : function(){    
+           return name;    
+       },    
+       setName : function(newName){    
+           name = newName;    
+       }    
+    }    
+    };   
+ 
+    var p = new Person();
+    p.setName("Tom");
+    alert(p.getName());
+ 
+    var Jack = function(){};
+    //继承自Person
+    Jack.prototype = new Person();
+    //添加私有方法
+    Jack.prototype.Say = function(){
+        alert("Hello,my name is Jack");
+    };
+    var j = new Jack();
+    j.setName("Jack");
+    j.Say();
+    alert(j.getName());
+
+三十四，
+异步js加载方案
+  1.defer 只支持ie
+  2.async
+  async 属性规定一旦脚本可用，则会异步执行。
+注释：async 属性仅适用于外部脚本（只有在使用 src 属性时）。
+注释：有多种执行外部脚本的方法：
+如果 async="async"：脚本相对于页面的其余部分异步地执行（当页面继续进行解析时，脚本将被执行）
+如果不使用 async 且 defer="defer"：脚本将在页面完成解析时执行
+如果既不使用 async 也不使用 defer：在浏览器继续解析页面之前，立即读取并执行脚本
+  3.创建script，加载完后callback
+  function(url,callback){
+    var script=document.createElement('script');
+    script.type='text/javascript';
+    if(script.readyState){
+        script.onreadystatechange=function(){
+            if(script.readyState=='loaded'||script.readyState=='complete'){
+                script.onreadystatechange=null;
+                callback();
+            }
+        }
+    }else{
+        script.onload=function(){
+            callback();
+        }
+    }
+    script.src=url;
+    document.body.appendChild(script);
+  }
+
+三十五，
+两个很大的数据相加
+var strAdd = function(srcA, srcB) { 
+var i, temp, tempA, tempB, len, lenA, lenB, carry = 0; 
+var res = [], 
+arrA = [], 
+arrB = [], 
+cloneArr = []; 
+arrA = srcA.split(''); 
+arrB = srcB.split(''); 
+arrA.reverse(); 
+arrB.reverse(); 
+lenA = arrA.length; 
+lenB = arrB.length; 
+len = lenA > lenB ? lenB : lenA; 
+for (i = 0; i < len; i++) { 
+tempA = parseInt(arrA[i], 10); 
+tempB = parseInt(arrB[i], 10); 
+temp = tempA + tempB + carry; 
+if (temp > 9) { 
+res.push(temp - 10); 
+carry = 1; 
+} else { 
+res.push(temp); 
+carry = 0; 
+} 
+} 
+cloneArr = lenA > lenB ? arrA : arrB; 
+for (; i < cloneArr.length; i++) { 
+tempA = parseInt(cloneArr[i], 10); 
+temp = tempA + carry; 
+if (temp > 9) { 
+res.push(temp - 10); 
+carry = 1; 
+} else { 
+res.push(temp); 
+carry = 0; 
+} 
+} 
+return (res.reverse()).join(''); 
+}; 
+
+三十三，
+两个很大的数相乘
+function bigMut(big, common) { 
+big += ""; 
+common += ""; 
+if (big.length < common.length) { 
+big = [common, common = big][0]; 
+} 
+big = big.split("").reverse(); 
+var oneMutManyRes = []; 
+var i = 0, 
+len = big.length; 
+for (; i < len; i++) { 
+oneMutManyRes[oneMutManyRes.length] = oneMutMany(big[i], common) + getLenZero(i); 
+} 
+var result = oneMutManyRes[0]; 
+for (i = 1, len = oneMutManyRes.length; i < len; i++) { 
+result = bigNumAdd(result, oneMutManyRes[i]); 
+} 
+return result; 
+} 
+function getLenZero(len) { 
+len += 1; 
+var ary = []; 
+ary.length = len; 
+return ary.join("0"); 
+} 
+function oneMutMany(one, many) { 
+one += ""; 
+many += ""; 
+if (one.length != 1) { 
+one = [many, many = one][0]; 
+} 
+one = parseInt(one, 10); 
+var i = 0, 
+len = many.length, 
+resAry = [], 
+addTo = 0, 
+curItem, 
+curRes, 
+toSave; 
+many = many.split("").reverse(); 
+for (; i <= len; i++) { 
+curItem = parseInt(many[i] || 0, 10); 
+curRes = curItem * one + addTo; 
+toSave = curRes % 10; 
+addTo = (curRes - curRes % 10) / 10; 
+resAry.unshift(toSave); 
+} 
+if (resAry[0] == 0) { 
+resAry.splice(0, 1); 
+} 
+return resAry.join(""); 
+} 
+function bigNumAdd(big, common) { 
+big += ""; 
+common += ""; 
+var maxLen = Math.max(big.length, common.length), 
+bAry = big.split("").reverse(), 
+cAry = common.split("").reverse(), 
+i = 0, 
+addToNext = 0, 
+resAry = [], 
+fn, 
+sn, 
+sum; 
+for (; i <= maxLen; i++) { 
+fn = parseInt(bAry[i] || 0); 
+sn = parseInt(cAry[i] || 0); 
+sum = fn + sn + addToNext; 
+addToNext = (sum - sum % 10) / 10; 
+resAry.unshift(sum % 10); 
+} 
+if (resAry[0] == 0) { 
+resAry.splice(0, 1); 
+} 
+return resAry.join(""); 
+} 
+
+三十四，实现二分法查找
+       function binary_search(arr, key) {
+            var low = 0,
+                high = arr.length - 1;
+            while(low <= high){
+                var mid = parseInt((high + low) / 2);
+                if(key == arr[mid]){
+                    return  mid;
+                }else if(key > arr[mid]){
+                    low = mid + 1;
+                }else if(key < arr[mid]){
+                    high = mid -1;
+                }else{
+                    return -1;
+                }
+            }
+        };
+        var arr = [1,2,3,4,5,6,7,8,9,10,11,23,44,86];
+        var result = binary_search(arr,10);
+三十五，HTTPS是如何实现加密？
+
+三十六，你所了解到的Web攻击技术
+（1）XSS（Cross-Site Scripting，跨站脚本攻击）：指通过存在安全漏洞的
+    Web网站注册用户的浏览器内运行非法的HTML标签或者JavaScript进行的一种攻击。
+（2）SQL注入攻击
+（3）CSRF（Cross-Site Request Forgeries，跨站点请求伪造）：指攻击者通过设置好的陷阱，
+    强制对已完成的认证用户进行非预期的个人信息或设定信息等某些状态更新。
+
+三十七，对MVC、MVVM的理解
+
+三十八，正则表达式
+写一个function，清除字符串前后的空格。（兼容所有浏览器）
+function trim(str) {
+    if (str && typeof str === "string") {
+        return str.replace(/(^\s*)|(\s*)$/g,""); //去除前后空白符
+    }
+}
+
+
+
+三十九，写出几种IE6 BUG的解决方法
+1.双边距BUG float引起的 使用display
+2.3像素问题 使用float引起的 使用dislpay:inline -3px
+3.超链接hover 点击后失效 使用正确的书写顺序 link visited hover active
+4.Ie z-index问题 给父级添加position:relative
+5.Png 透明 使用js代码 改
+6.Min-height 最小高度 ！Important 解决’
+7.select 在ie6下遮盖 使用iframe嵌套
+8.为什么没有办法定义1px左右的宽度容器（IE6默认的行高造成的，使用over:hidden,zoom:0.08 line-height:1px）
+
+四十，html5的新特性
+1、标签语义化，比如header，footer，nav，aside，article，section等，新增了很多表单元素，入email，url等，
+除去了center等样式标签，还有除去了有性能问题的frame，frameset等标签2、音视频元素，video，audio的增加使得
+我们不需要在依赖外部的插件就可以往网页中加入音视频元素。
+3、新增很多api，比如获取用户地理位置的window.navigator.geoloaction，
+4、websocketwebsocket是一种协议，可以让我们建立客户端到服务器端的全双工通信，这就意味着服务器端可以主动推送数据到客户端，
+5、webstorage，webstorage是本地存储，存储在客户端，包括localeStorage和sessionStorage，localeStorage是持久化存
+储在客户端，只要用户不主动删除，就不会消失，sessionStorage也是存储在客户端，但是他的存在时间是一个回话，一旦浏览器的关于
+该回话的页面关闭了，sessionStorage就消失了，
+6、缓存html5允许我们自己控制哪些文件需要缓存，哪些不需要，具体的做法如下：
+    1、首先给html添加manifest属性，并赋值为cache.manifest
+    2、cache.manifest的内容为: 
+             CACHE MANIFEST
+             #v1.2
+             CACHE :           //表示需要缓存的文件
+               a.js
+               b.js
+           NETWORK:    //表示只在用户在线的时候才需要的文件，不会缓存
+             c.js
+           FALLBACK
+                   /index.html     //表示如果找不到第一个资源就用第二个资源代替
+7、web worker，web worker是运行在浏览器后台的js程序，他不影响主程序的运行，是另开的一个js线程，可以用这个线程执行复
+    杂的数据操作，然后把操作结果通过postMessage传递给主线程，这样在进行复杂且耗时的操作时就不会阻塞主线程了。
+8，new 操作符到底做了什么
+  首先，new操作符为我们创建一个新的空对象，然后this变量指向该对象，
+  其次，空对象的原型执行函数的原型，
+  最后，改变构造函数内部的this的指向
+
+四十一，JavaScript的继承
+function A(name){  this.name=name; }
+A.prototype.sayName=function(){ console.log(this.name); }
+function B(age){ this.age=age; }
+原型继承B.prototype=new A("mbj");  //被B的实例共享
+var foo=new B(18);
+foo.age;    //18,age是本身携带的属性
+foo.name;   //mbj，等价于foo.__proto__.name
+foo.sayName(); //mbj,等价于foo.__proto__.proto__.sayName()
+foo.toString();  //"[object Object]",等价于foo.__proto__.__proto__.__proto__.toString();
+这样B通过原型继承了A，在new B的时候，foo中有个隐藏的属性__proto__指向构造函数的prototype对象，在这里是A对象实例，A对象里面也有一个隐藏的属性__proto__,指向A构造函数的prototype对象，这个对象里面又有一个__proto__指向Object的prototype这种方式的缺第一个缺点是所有子类共享父类实例，如果某一个子类修改了父类，其他的子类在继承的时候，会造成意想不到的后果。第二个缺点是在构造子类实例的时候，不能给父类传递参数。构造函数继承function B(age,name){  this.age=age;A.call(this,name); }
+var foo=new B(18,"wmy");
+foo.name;     //wmy
+foo.age;      //18
+foo.sayName();   //undefined
+采用这种方式继承是把A中的属性加到this上面，这样name相当于就是B的属性，sayName不在A的构造函数中，所以访问不到sayName。这种方法的缺点是父类的prototype中的函数不能复用。原型继承+构造函数继承function B(age,name){  this.age=age;A.call(this,name); }
+B.prototype=new A("mbj");
+var foo=new B(18,"wmy");
+foo.name;     //wmy
+foo.age;      //18
+foo.sayName();   //wmy
+这样就可以成功访问sayName函数了，结合了上述两种方式的优点，但是这种方式也有缺点，那就是占用的空间更大了。
+
+四十二，浏览器的垃圾回收机制
+垃圾收集器必须跟踪哪个变量有用哪个变量没用，对于不再有用的变量打上标记，以备将来收回其占用的内存，内存泄露和浏览器实现的垃圾回收机制
+息息相关， 而浏览器实现标识无用变量的策略主要有下两个方法：
+第一，引用计数法跟踪记录每个值被引用的次数。当声明一个变量并将引用类型的
+值赋给该变量时，则这个值的引用次数就是1。如果同一个值又被赋给另一个变量，则该值的引用次 数加1.相反，如果包含对这个值引用的变量又取
+得另外一个值，则这个值的引用次数减1.当这个值的引用次数变成0时，则说明没有办法访问这个值了，因此就 可以将其占用的内存空间回收回来。
+如： var a = {};     //对象{}的引用计数为1
+     b = a;          //对象{}的引用计数为 1+1 
+     a = null;       //对象{}的引用计数为2-1
+所以这时对象{}不会被回收;IE 6, 7 对DOM对象进行引用计数回收， 这样简单的垃圾回收机制，非常容易出现循环引用问题导致内存不能被回收， 
+进行导致内存泄露等问题，一般不用引用计数法。
+第二，标记清除法到2008年为止，IE,Firefox,Opera,Chrome和Safari的javascript实现
+使用的都是标记清除式的垃圾收集策略（或类似的策略），只不过垃圾收集的时间间隔互有不同。标记清除的算法分为两个阶段，标记(mark)
+和清除(sweep). 第一阶段从引用根节点开始标记所有被引用的对象，第二阶段遍历整个堆，把未标记的对象清除。
+
+四十三，webSocket如何兼容低浏览器？(阿里)
+ajax 长轮询 flash socket
+
+四十四，如何在页面上实现一个圆形的可点击区域？
+1.map+area
+2.border-radius
+3.纯js实现 
+document.onclick=function(e){  
+    var r=50;//圆的半径  
+var x1=100,y1=100,x2= e.clientX;y2= e.clientY;  
+//计算鼠标点的位置与圆心的距离  
+    var len=Math.abs(Math.sqrt(Math.pow(x2-x1,2)+Math.pow(y2-y1,2)));  
+    if(len<=50){  
+        console.log("内")  
+    }else{  
+        console.log("外")  
+    }  
+ }  
+
+四十五，b与strong的区别、i与em的区别
+
+这两对标签的区别其实差不多，所以放在一起介绍了。
+网上很多解释这两对标签解释的挺复杂的，什么物理元素?什么逻辑元素?其实没必要介绍的这么复杂，简单一点多好。
+其实这两对标签最大区别就是一个给搜索引擎看的，一个是给用户看的。就用b和strong标签做例子吧。
+b标签和strong标签给我们的主观感受都是加粗，但对搜索引擎来说b标签和普通的文字并没有什么区别，而strong标签
+却是起强调作用的。也就是说如果你想让搜索引擎认为你的某句话很重要时那就用strong标签。如果只是想让用户看到加粗的效果，那就用b标签。
+同理如em标签也是针对搜索引擎来起作用的，i标签只是让用户看到展示的是斜体。
+
+四十六，javascript 代码中的”use strict”;是什么意思 ? 使用它区别是什么？http://www.cnblogs.com/jiqing9006/p/5091491.html
+消除Javascript语法的一些不合理、不严谨之处，减少一些怪异行为;
+- 消除代码运行的一些不安全之处，保证代码运行的安全；
+- 提高编译器效率，增加运行速度；
+- 为未来新版本的Javascript做好铺垫。
+"严格模式"体现了Javascript更合理、更安全、更严谨的发展方向，包括IE 10在内的主流浏览器，都已经支持它，许多大项目已经开始全面拥抱它。
 
 项目篇
-1、面试中曾遇到哪些技术问题，你的解决思路？
+一、项目中曾遇到哪些技术问题，你的解决思路？
+导出的pdf宽高的问题。
+canvas画饼状图的问题。
 
+二.你原来做过哪些让你印象深刻的项目？用star面试来不停追问。
+   1.做过最满意的项目是什么？
+   在唯品会实习的时候，用js制作了一个生成页面代码的工具
+   2.项目背景
+       为什么要做这件事情？
+       因为当时在的那个小组，很多工作都是很重复和琐碎的，整个小组的人都浪费了很多精力在
+       重复的事情上。而重复的工作，其实都可以用工具来解决的。所以我直接用js制作了一个工具，
+       可以生成页面代码然后把代码直接上传到后台，就可以生成了页面。节省了很多的人力。
+
+       最终达到什么效果？工作的效率得到极大的提升。
+
+   3.你处于什么样的角色，起到了什么方面的作用？
+     全部东西都是我一个人做的。
+   4.在项目中遇到什么技术问题？具体是如何解决的？
+     没有遇到什么大的问题，问题都比较小吧，例如拖动模块，上传图片模块在过程中都遇到一些问题，
+     但是通过百度和自主的学习，都一个个解决了。
+   5.如果再做这个项目，你会在哪些方面进行改善。
+     在这个项目中我没有把切割图片的功能包含进去，这个涉及到后台语言。如果重新做的话，我会尝试用node.js
+     把切割图片这个功能也包含进去。
 	  
 http://www.imooc.com/wenda/detail/323379
 
 技巧篇
-1.这次记住了上次的教训，聊项目的时候，可以给面试官挖几个坑，因为这次面试的明显能感觉出来是个boss。坑在哪里？
+一.这次记住了上次的教训，聊项目的时候，可以给面试官挖几个坑，因为这次面试的明显能感觉出来是个boss。坑在哪里？
 坑是自己掌握的比较好，在聊项目的时候可以吸引到面试官的点，稍微带一带方向，下一个问题面试官可能就是要问你这个问题了。 
 
 
+二，职业规划
+   1.希望在前端这条路上走得更广更远
+   2.希望在公司里能做出些成就。
+三，
+0.谈人生理想，团队契合度，价值观，文化认同程度表示已经通过技术面试
 
+1.对于自己不熟悉的技术不提，可以提醒面试官自己哪里熟悉
+
+2.引导面试官问自己最擅长的
+
+3.问到自己不懂的，可以说其他相关的
+
+4.学习能力、内驱力
+   内驱力：1.钱。2.既然选了前端作为自己的职业，那我想在技术上取得些成就。
+   3.我讨厌在自己岗位上一事无成的感觉。
+
+5.不要说自己精通AMD/CMD、grunt、gulp等工具，因为知识点很深
+
+16.遇到不懂的知识点，不要遮掩畏难或者抵触；
+
+
+三，
+
+http://www.92to.com/bangong/2016/12-14/14476078.html
 
 
 
