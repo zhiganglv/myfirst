@@ -108,7 +108,7 @@ HTML页面加载和解析流程
 6. 服务器返回图片文件，由于图片占用了一定面积，影响了后面段落的排布，因此浏览器需要回过头来重新渲染这部分代码； 
 7. 浏览器发现了一个包含一行Javascript代码的＜script＞标签，js的下载和执行会阻塞Dom树的构建，赶快运行它； 
 8. Javascript脚本执行了这条语句，它命令浏览器隐藏掉代码中的某个＜div＞ （style.display=”none”）。突然少了这么一个元素，浏览器不得不重新渲染这部分代码； 
-9. 终于等到了＜/html＞的到来，浏览器泪流满面…… 
+9. 终于等到了＜html＞的到来，浏览器泪流满面…… 
 10. 等等，还没完，用户点了一下界面中的“换肤”按钮，Javascript让浏览器换了一下＜link＞标签的CSS路径； 
 11. 浏览器召集了在座的各位＜div＞＜span＞＜ul＞＜li＞们，“大伙儿收拾收拾行李，咱得重新来过……”，浏览器向服务器请求了新的CSS文件，重新渲染页面。
 
@@ -154,14 +154,28 @@ Javascript的加载和执行的特点：
 http://www.cnblogs.com/smjack/archive/2009/02/24/1396895.html
 
 网络层面：
-1.减少HTTP请求数量
-	合并文件，js,css,雪碧图。
-2.使用内容分布式网络（cdn）
+1.减少HTTP请求数量和文件大小。
+	合并文件，js,css,雪碧图，base64化图片。
+	移动端，更加不同的大小屏选择不同大小的图片。
+	http缓存，cache-control,expires,etag,last-modified。
+	把框架文件写入localstorage,写入混合app应用,把大的接口数据写入sessionStorage.
+	gzip压缩文件。
+	页面图标用，iconfont.
+	使用flash动画。
+2.优化首屏。
+  文件预加载和懒加载。
+  图片预加载和框架插件懒加载。
+  首屏内容最小化。
+  inline首屏必备的css和js。
+  服务器渲染。
+2.使用内容分布式网络（cdn）,负载均衡。
 	内容分布式网络（CDN）是一系列分布在不同地域的服务器的集合，能够更有效的给用户发送信息。
 	它会根据一种衡量网域距离的方法，选取为某个用户发送数据的服务器。比如，到达用户最少跳或者最快相应速度的服务器会被选中。
-3.给头部添加一个失效期或者Cache-Control
-4.Gzip尽可能多的文件类型是减少页面大小从而提高用户体验的一个简单的方法，代码混淆。
-5.减少DNS的查询
+3.域名收敛，提前域名解析。
+	在服务器中响应设置X-DNS-Prefetch-Control的值为on启动预解析
+	HTML中，<meta http-equiv="x-dns-prefetch-control" content="on">
+    对特定域名预解析<link rel=”dns-prefetch” href=”//fonts.googleapis.com”>
+
 	减少不同域名的数量则会减少DNS查询的数量。
 	减少不同域名的数量可能减少页面并行的下载数量。减少DNS查询缩短了响应时间，但减少了并行下载数也许会增加响应时间。我的建议是
 	将组件分布在两到四个域名之间。这能很好的折中减少DNS查询提高的速度和维持较高水平的并行下载的效果。
@@ -192,6 +206,8 @@ http://www.cnblogs.com/smjack/archive/2009/02/24/1396895.html
 	避免使用通配符
 	尽量使用css动画，启用硬件加速。
 2.JavaScrip thttp://www.codeceo.com/article/javascript-performance-tips.html
+	复杂的计算逻辑给new worker。
+	函数节流。
 	减少dom操作，
 	使用虚拟的dom，
 	多个变量声明，
@@ -201,6 +217,20 @@ http://www.cnblogs.com/smjack/archive/2009/02/24/1396895.html
 	className,
 	简化循环体
 	代码重用
+
+http 错误码
+304协商缓存(expires,cache-control强制缓存200错误码，协商缓存etag，last-modified304错误码)
+204cors预检查
+101协议升级
+301重定向，
+408请求超时
+500服务器错误
+
+
+前端安全
+xss和csrf攻击。
+xss 输入框代码注入，图片代码注入，append代码注入。解决方法，转义字符串，httponly.
+csrf攻击，校验host，验证码，token加密解密。
 
 
 十，浏览器的主要组成
@@ -212,3 +242,92 @@ http://www.cnblogs.com/smjack/archive/2009/02/24/1396895.html
 　　5. UI后端 － 用来绘制类似组合选择框及对话框等基本组件，具有不特定于某个平台的通用接口，底层使用操作系统的用户接口。
 　　6. JS解释器 － 用来解释执行JS代码。
 　　7. 数据存储 － 属于持久层，浏览器需要在硬盘中保存类似cookie的各种数据，HTML5定义了web database技术，这是一种轻量级完整的客户端存储技术
+
+2018年春，面试总结
+1.注重平台和总体发展。
+2.注重公司的名气。
+3.如何处理高并发？协程，nton协程，redis缓存。
+4.this的指向
+5.正则表达式。
+6.苹果系统的1倍图2倍图。
+7.webpack的优化。
+8.跨域，jsonp，cors，代理，反向代理。
+9.vue的执行效率。
+10.追求极致的精神。
+11.寻找标尺，了解技术发展的社会性.
+12.技术难点多准备些。
+13.简历上的技术点最好全部透彻，遇到的技术最好完全懂透彻。
+14.技术以及职业瓶颈。
+15.http原理。
+16.xss和csrf攻击。
+17.快速定位bug。
+18.白屏的原因。
+19.部署。
+
+未来需要提高的地方
+1.深入理解mvc，3
+2.兼容性的问题 4
+3.前端性能优化 5
+4.熟悉nodejs，koa，express 4
+5.大公司背景。3
+6.精通JavaScript 3
+7.webpack，fix3. 2
+8.组件化开发。 2
+9.深入理解框架，懂源码。3
+10.webview下的混合app。 3
+11.技术攻坚能力。2
+12.有管理经验。 2
+13.前端架构。 4
+14.自动化测试。1
+15.公众号和小程序开发。2.
+
+1.前端性能优化。
+2.前端架构。
+3.nodejs。
+4.兼容性的开发经验。
+5.深入理解vue，mvc，组件化。
+6.精通JavaScript。
+7.webview，跨平台开发。
+8.公众号和小程序开发。
+
+http
+
+http
+是建立在tcp协议基础上的，属于应用层协议。tcp是传输层的协议，需要建立连接的协议，
+有11种连接状态，建立过程中包括3次握手，4次挥手。对应的有udp协议，不需要建立连接。
+http分为状态行，头部，还有body。
+方法有：get,post,put,delete,options等
+头部通常有
+Access-Control-Allow-Origin:*，
+Access-Control-Allow-Headers:X-Requested-With,accept, origin, content-type
+cookie，网页设置的cookie，http-only是js不能读取和更改的
+Accept-Encoding：表示接受的压缩格式，通常是gzip，
+referer：表示发起请求的源地址
+date:表示请求时间，
+User-Agent：表示代理请求的客户端信息
+content-type：表示body的数据类型
+Cache-Control：no-store,no-cache,max-age
+Expires
+ETag
+
+状态码：
+100 请求继续
+101 切换协议
+200 请求成功
+204 options
+301 302重定向
+304 使用缓存
+400请求错误
+401 没有权限
+403 服务器拒绝服务
+404 
+408请求超时
+5服务器错误
+1.性能优化。
+网络优化
+2.安全
+3.http缓存
+4.vue原理
+5.vuex原理
+6.commpile，nexttick
+7.难点

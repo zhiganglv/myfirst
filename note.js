@@ -26,7 +26,15 @@ function delegate(currentTargetDom,targetStr,type,callBack){
 	}
 }
 
-
+var a={
+    len:5,
+    add:function(){
+        this.len++;
+    }
+}
+function b(fun){
+    fun();
+}
 2.jquery
 $("#link-list").delegate("a", "click", function(){
   console.log("you clicked a link!",$(this));
@@ -234,8 +242,7 @@ Emitter.prototype.trigger = function(eventName) {
     var args = Array.prototype.slice.apply(arguments).slice(1);//atgs为获得除了eventName后面的参数(注册事件的参数)
     //console.log(args,'args');
     var listener = this._listener[eventName];
-    //console.log(listener,'listener',this._listener,'this._listener')
- 
+    //console.log(listener,'listener',this._listener,'this._listener') 
     if(!Array.isArray(listener)) return;//自定义事件名不存在
     listener.forEach(function(callback) {
         try {
@@ -1305,7 +1312,16 @@ https://www.zhihu.com/question/34074946
 一、项目中曾遇到哪些技术问题，你的解决思路？
 导出的pdf宽高的问题。
 canvas画饼状图的问题。
-
+var length=10;
+function fn(){console.log(this.length)}
+var obj={
+    length:5,
+    api:function(fn){
+        fn();
+        arguments[0]();
+    }
+}
+obj.api(fn,2);
 二.你原来做过哪些让你印象深刻的项目？用star面试来不停追问。
    1.做过最满意的项目是什么？
    在唯品会实习的时候，用js制作了一个生成页面代码的工具
@@ -1314,9 +1330,7 @@ canvas画饼状图的问题。
        因为当时在的那个小组，很多工作都是很重复和琐碎的，整个小组的人都浪费了很多精力在
        重复的事情上。而重复的工作，其实都可以用工具来解决的。所以我直接用js制作了一个工具，
        可以生成页面代码然后把代码直接上传到后台，就可以生成了页面。节省了很多的人力。
-
        最终达到什么效果？工作的效率得到极大的提升。
-
    3.你处于什么样的角色，起到了什么方面的作用？
      全部东西都是我一个人做的。
    4.在项目中遇到什么技术问题？具体是如何解决的？
